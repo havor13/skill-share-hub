@@ -14,7 +14,6 @@ It supports user accounts and profiles, tutorial posting, ratings and comments, 
 ## Team-mates Names
 Sampson Havor
 Simone Leticia C G Plaine
-Julian Becerra
 
 ## 🚀 Getting Started
 
