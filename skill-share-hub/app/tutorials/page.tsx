@@ -57,6 +57,7 @@ export default function TutorialsPage() {
           filteredTutorials.map((tutorial) => (
             <TutorialCard
               key={tutorial.id}
+              id={tutorial.id}
               title={tutorial.title}
               description={tutorial.description}
               category={tutorial.category}
