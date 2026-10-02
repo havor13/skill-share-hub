@@ -1,4 +1,4 @@
-import CommentList from '@/components/feedback/CommentList';
+import CommentsSection from '@/components/feedback/CommentsSection';
 import RatingWidget from '@/components/feedback/RatingWidget';
 import { tutorials } from '@/data/tutorials';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export default async function TutorialDetailsPage({ params }: Props) {
       <Link href="/tutorials" className="text-blue-600 hover:underline">
         ← Back to Tutorials
       </Link>
-
+     <div className="border rounded-lg p-6 mb-6 shadow-sm">
       <h1 className="text-3xl font-bold mb-4">
         {tutorial.title}
       </h1>
@@ -35,21 +35,22 @@ export default async function TutorialDetailsPage({ params }: Props) {
       </p>
 
       <p className="mb-4">
-        Category: {tutorial.category}
+        Category:<span className="bg-gray-100 px-3 py-1 rounded-full text-sm">{tutorial.category}</span> 
       </p>
 
       <a
         href={tutorial.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 hover:underline"
+        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
       >
         Visit Tutorial
       </a>
-
+     </div>
       <RatingWidget />
 
-      <CommentList />
+    <CommentsSection />
+
     </main>
   );
 }

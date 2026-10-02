@@ -4,20 +4,13 @@ type Comment = {
   content: string;
 };
 
-const comments: Comment[] = [
-  {
-    id: 1,
-    author: 'Sarah',
-    content: 'Great tutorial!',
-  },
-  {
-    id: 2,
-    author: 'John',
-    content: 'Very helpful explanation.',
-  },
-];
+type CommentListProps = {
+  comments: Comment[];
+};
 
-export default function CommentList() {
+export default function CommentList({
+  comments,
+}: CommentListProps) {
   return (
     <section className="mt-8">
       <h2 className="text-xl font-semibold mb-4">
