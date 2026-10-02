@@ -1,3 +1,5 @@
+import CommentList from '@/components/feedback/CommentList';
+import RatingWidget from '@/components/feedback/RatingWidget';
 import { tutorials } from '@/data/tutorials';
 import Link from 'next/link';
 
@@ -44,6 +46,10 @@ export default async function TutorialDetailsPage({ params }: Props) {
       >
         Visit Tutorial
       </a>
+
+      <RatingWidget />
+
+      <CommentList />
     </main>
   );
 }
