@@ -37,7 +37,7 @@ export default function TutorialsPage() {
         <div className="mb-6">
             <Link href="/tutorials/new" className="text-blue-600 hover:underline">Add Tutorial</Link>
         </div>
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-6">
         <TutorialSearch
             search={search}
             setSearch={setSearch}
@@ -52,7 +52,7 @@ export default function TutorialsPage() {
 
       <div className="flex flex-col gap-4">
         {filteredTutorials.length === 0 ? (
-          <p>No tutorials found.</p>
+          <p role="status">No tutorials found.</p>
         ) : (
           filteredTutorials.map((tutorial) => (
             <TutorialCard

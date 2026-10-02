@@ -13,7 +13,7 @@ export default function TutorialFilter({
     <select
       value={category}
       onChange={(e) => setCategory(e.target.value)}
-      className="border p-2 rounded mb-6"
+      className="border p-2 rounded"
     >
       {categories.map((cat) => (
         <option
