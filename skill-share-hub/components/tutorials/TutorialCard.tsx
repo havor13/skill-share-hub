@@ -1,4 +1,7 @@
+import Link from 'next/link';
+
 type TutorialCardProps = {
+  id: string;
   title: string;
   description: string;
   category: string;
@@ -6,6 +9,7 @@ type TutorialCardProps = {
 };
 
 export default function TutorialCard({
+  id,
   title,
   description,
   category,
@@ -20,9 +24,13 @@ export default function TutorialCard({
       <p className="text-sm text-gray-600">
         {category}
       </p>
-      <a href={link} className="text-blue-600 hover:underline">
+      <a href={link}  className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
         View Tutorial
       </a>
+      <br />
+      <Link href={`/tutorials/${id}`} className="text-blue-600 hover:underline">
+        View Details
+      </Link>
     </div>
   );
 }
