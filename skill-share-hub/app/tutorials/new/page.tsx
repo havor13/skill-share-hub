@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import TutorialForm from '../../../components/tutorials/TutorialForm';
+import TutorialForm from '@/components/tutorials/TutorialForm';
 
 export default function NewTutorialPage() {
   return (
     <main className="p-8">
-      <Link href="/tutorials" className="text-blue-600 hover:underline">
+      <Link href="/tutorials" className="text-blue-600 hover:underline mb-4 block">
         ← Back to Tutorials
       </Link>
 

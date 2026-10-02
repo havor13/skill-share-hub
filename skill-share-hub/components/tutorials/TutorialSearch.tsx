@@ -13,7 +13,7 @@ export default function TutorialSearch({
       placeholder="Search tutorials"
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="border p-2 rounded mb-6 w-full max-w-md"
+      className="border p-2 rounded w-full max-w-md"
     />
   );
 }
