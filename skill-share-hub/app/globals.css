@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Base */
+  --background: #fafafa;
+  --foreground: #1a1a2e;
+  --surface: #ffffff;
+  --surface-muted: #f3f4f6;
+  --border: #e5e7eb;
 
-@theme inline {
+  /* Brand / accent */
+  --primary: #6366f1;      /* indigo */
+  --primary-hover: #4f46e5;
+  --primary-foreground: #ffffff;
+
+  --secondary: #14b8a6;    /* teal accent, good for "cooking/design" tags */
+  --secondary-hover: #0d9488;
+
+  --accent: #f59e0b;       /* warm amber, good for ratings/highlights */
+
+  /* Feedback colors */
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  /* Muted text */
+  --muted-foreground: #6b7280;
+
+  /* Theme mapping */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  --font-mono: var(--font-geist-mono, monospace);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #0f0f17;
     --foreground: #ededed;
+    --surface: #1a1a2e;
+    --surface-muted: #21212f;
+    --border: #2e2e3e;
+
+    --primary: #818cf8;
+    --primary-hover: #a5b4fc;
+    --primary-foreground: #0f0f17;
+
+    --secondary: #2dd4bf;
+    --secondary-hover: #5eead4;
+
+    --accent: #fbbf24;
+
+    --muted-foreground: #9ca3af;
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-border: var(--border);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-hover: var(--secondary-hover);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
 }
