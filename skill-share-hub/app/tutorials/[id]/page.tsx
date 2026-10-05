@@ -1,6 +1,5 @@
 import CommentsSection from '@/components/feedback/CommentsSection';
 import RatingWidget from '@/components/feedback/RatingWidget';
-import { tutorials } from '@/data/tutorials';
 import Link from 'next/link';
 
 type Props = {
@@ -10,47 +9,52 @@ type Props = {
 };
 
 export default async function TutorialDetailsPage({ params }: Props) {
- const { id } = await params;
+  const { id } = await params;
 
- const tutorial = tutorials.find(
-  (tutorial) => tutorial.id === id
- );
+  const response = await fetch(
+    `${process.env.NEXTAUTH_URL ?? 'http://localhost:3002'}/api/tutorials/${id}`,
+    {
+      cache: 'no-store',
+    }
+  );
 
-  if (!tutorial) {
+  if (!response.ok) {
     return <p>Tutorial not found.</p>;
   }
+
+  const data = await response.json();
+  const tutorial = data.tutorial;
 
   return (
     <main className="p-6">
       <Link href="/tutorials" className="text-blue-600 hover:underline">
         ← Back to Tutorials
       </Link>
-     <div className="border rounded-lg p-6 mb-6 shadow-sm">
-      <h1 className="text-3xl font-bold mb-4">
-        {tutorial.title}
-      </h1>
 
-      <p className="mb-4">
-        {tutorial.description}
-      </p>
+      <div className="border rounded-lg p-6 mb-6 shadow-sm">
+        <h1 className="text-3xl font-bold mb-4">
+          {tutorial.title}
+        </h1>
 
-      <p className="mb-4">
-        Category:<span className="bg-gray-100 px-3 py-1 rounded-full text-sm">{tutorial.category}</span> 
-      </p>
+        <p className="mb-4">
+          {tutorial.description}
+        </p>
 
-      <a
-        href={tutorial.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        Visit Tutorial
-      </a>
-     </div>
-      <RatingWidget />
+        <p className="mb-4">
+          Category:
+          <span className="bg-gray-100 px-3 py-1 rounded-full text-sm ml-2">
+            {tutorial.category}
+          </span>
+        </p>
+        <a href={tutorial.contentUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+        {tutorial.contentUrl}
+          Visit Tutorial
+        </a>
+      </div>
 
-    <CommentsSection />
+      <RatingWidget tutorialId={id} />
 
+      <CommentsSection />
     </main>
   );
 }
