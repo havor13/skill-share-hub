@@ -1,9 +1,13 @@
 import mongoose, { Schema, models, model, type Document, type Model } from "mongoose";
 
+export const USER_ROLES = ["user", "admin"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 export interface IUser extends Document {
   name: string;
   email: string;
   passwordHash: string;
+  role: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +29,11 @@ const UserSchema = new Schema<IUser>(
     passwordHash: {
       type: String,
       required: [true, "Password is required"],
+    },
+    role: {
+      type: String,
+      enum: USER_ROLES,
+      default: "user",
     },
   },
   { timestamps: true }
