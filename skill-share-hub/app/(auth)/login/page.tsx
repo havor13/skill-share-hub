@@ -1,11 +1,15 @@
 'use client';
+
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -14,26 +18,35 @@ export default function LoginPage() {
     const password = formData.get('password')?.toString() || '';
 
     setError('');
-    setSuccess('');
 
     if (!email || !password) {
       setError('Email and password are required.');
       return;
     }
 
-    setSuccess('Login successful!');
+    setIsSubmitting(true);
+
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError('Invalid email or password.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    router.push('/tutorials');
+    router.refresh();
   }
 
   return (
     <main className="p-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Login
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">Login</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 max-w-md"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
         <input
           name="email"
           type="email"
@@ -48,26 +61,16 @@ export default function LoginPage() {
           className="border p-2 rounded"
         />
 
-        {error && (
-          <p className="text-red-600">
-            {error}
-          </p>
-        )}
-
-        {success && (
-          <p className="text-green-600">
-            {success}
-          </p>
-        )}
+        {error && <p className="text-red-600">{error}</p>}
 
         <button
           type="submit"
-          className="bg-blue-600 text-white p-2 rounded"
+          disabled={isSubmitting}
+          className="bg-blue-600 text-white p-2 rounded disabled:opacity-50"
         >
-          Login
+          {isSubmitting ? 'Logging in…' : 'Login'}
         </button>
       </form>
     </main>
   );
 }
- 

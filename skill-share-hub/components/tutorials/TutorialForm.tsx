@@ -1,54 +1,74 @@
 'use client';
+
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function TutorialForm() {
-const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-function handleSubmit(
-  event: React.FormEvent<HTMLFormElement>
-) {
-  event.preventDefault();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-  const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-  const title = formData.get('title');
-  const description = formData.get('description');
-  const category = formData.get('category');
-  const contentUrl = formData.get('contentUrl');
+    const title = formData.get('title');
+    const description = formData.get('description');
+    const category = formData.get('category');
+    const contentUrl = formData.get('contentUrl');
 
-  console.log({
-    title,
-    description,
-    category,
-    contentUrl,
-  });
+    setError(null);
+    setIsSubmitting(true);
 
-  event.currentTarget.reset();
+    try {
+      const res = await fetch('/api/tutorials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, category, contentUrl }),
+      });
 
-  // TODO: POST /api/tutorials
+      const data = await res.json();
 
-  setSuccessMessage('Tutorial submitted successfully!');
-}
+      if (!res.ok) {
+        if (res.status === 401) {
+          setError('You must be logged in to publish a tutorial.');
+        } else {
+          setError(data.error || 'Failed to publish tutorial.');
+        }
+        setIsSubmitting(false);
+        return;
+      }
+
+      form.reset();
+      // Send them to the listing page so they can actually see it —
+      // router.refresh() ensures the listing re-fetches instead of showing
+      // a stale cached version.
+      router.push('/tutorials');
+      router.refresh();
+    } catch {
+      setError('Something went wrong. Please try again.');
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 max-w-lg"
-    > 
-      {successMessage && (
-        <div className="bg-green-100 text-green-800 p-2 rounded">
-          {successMessage}
-        </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-lg">
+      {error && (
+        <div className="bg-red-100 text-red-800 p-2 rounded">{error}</div>
       )}
+
       <label htmlFor="title">Title</label>
-        <input
-          id="title"
-          type="text"
-          name="title"
-          placeholder="Title"
-          className="border p-2 rounded"
-          required
-        />
+      <input
+        id="title"
+        type="text"
+        name="title"
+        placeholder="Title"
+        className="border p-2 rounded"
+        required
+      />
+
       <label htmlFor="description">Description</label>
       <textarea
         id="description"
@@ -59,7 +79,6 @@ function handleSubmit(
       />
 
       <label htmlFor="category">Category</label>
-
       <select
         id="category"
         name="category"
@@ -84,9 +103,10 @@ function handleSubmit(
 
       <button
         type="submit"
-        className="bg-blue-600 text-white p-2 rounded"
+        disabled={isSubmitting}
+        className="bg-blue-600 text-white p-2 rounded disabled:opacity-50"
       >
-        Publish Tutorial
+        {isSubmitting ? 'Publishing…' : 'Publish Tutorial'}
       </button>
     </form>
   );

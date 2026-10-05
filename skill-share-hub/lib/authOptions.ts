@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
         const user = await User.findOne({ email: email.toLowerCase() });
 
-        if (!user) {
+        if (!user || !user.passwordHash) {
           return null;
         }
 
@@ -55,10 +55,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  // Temporarily commented out for testing — you don't have a /login page yet,
-  // so leaving this out lets NextAuth's default sign-in form work at
-  // /api/auth/signin. Restore this once you've built your own login page.
-  // pages: {
-  //   signIn: "/login",
-  // },
+  pages: {
+    signIn: "/login",
+  },
 };
