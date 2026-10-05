@@ -16,6 +16,13 @@ export interface IComment {
   createdAt: Date;
 }
 
+export interface IRating {
+  user: Types.ObjectId;
+  value: number; // 1-5
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface ITutorial extends Document {
   title: string;
   description: string;
@@ -24,6 +31,7 @@ export interface ITutorial extends Document {
   author: Types.ObjectId;
   averageRating: number;
   ratingsCount: number;
+  ratings: IRating[];
   comments: IComment[];
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +43,14 @@ const CommentSchema = new Schema<IComment>(
     text: { type: String, required: true, trim: true, maxlength: 1000 },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
+);
+
+const RatingSchema = new Schema<IRating>(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    value: { type: Number, required: true, min: 1, max: 5 },
+  },
+  { timestamps: true }
 );
 
 const TutorialSchema = new Schema<ITutorial>(
@@ -78,10 +94,24 @@ const TutorialSchema = new Schema<ITutorial>(
       default: 0,
       min: 0,
     },
+    ratings: { type: [RatingSchema], default: [] },
     comments: { type: [CommentSchema], default: [] },
   },
   { timestamps: true }
 );
+
+// Keep the aggregate fields in sync whenever the ratings array changes.
+TutorialSchema.pre("save", function () {
+  if (this.isModified("ratings")) {
+    const ratings = this.ratings;
+    this.ratingsCount = ratings.length;
+    this.averageRating = ratings.length
+      ? Math.round(
+          (ratings.reduce((sum, r) => sum + r.value, 0) / ratings.length) * 10
+        ) / 10
+      : 0;
+  }
+});
 
 // Supports the search/filter endpoint (title/description text search + category filter)
 TutorialSchema.index({ title: "text", description: "text" });
