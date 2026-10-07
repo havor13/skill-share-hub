@@ -80,36 +80,8 @@ export default function Home() {
         color: "var(--color-foreground)",
       }}
     >
-      {/* Nav */}
-      <header
-        className="flex items-center justify-between px-6 py-5 sm:px-10"
-        style={{ borderBottom: "1px solid var(--color-border)" }}
-      >
-        <span className="text-[15px] font-semibold tracking-tight">
-          Skill Share Hub
-        </span>
-        <nav className="flex items-center gap-6 text-[14px]">
-          <Link href="/tutorials" className="hover:opacity-70">
-            Browse
-          </Link>
-          <Link href="/login" className="hover:opacity-70">
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className="px-4 py-2 text-[14px] font-medium transition-colors"
-            style={{
-              backgroundColor: "var(--color-primary)",
-              color: "var(--color-primary-foreground)",
-            }}
-          >
-            Get started
-          </Link>
-        </nav>
-      </header>
-
       {/* Hero */}
-      <section className="px-6 py-20 sm:px-10 sm:py-28">
+      <section className="px-6 py-10 sm:px-10 sm:py-12">
         <div className="max-w-2xl">
           <h1
             className="text-[44px] leading-[1.1] sm:text-[56px]"
