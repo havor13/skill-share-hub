@@ -8,12 +8,12 @@ export default function Header() {
 
   return (
     <header className="bg-blue-600 text-white px-6 py-4">
-      <div className="flex justify-between items-center max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-between max-w-6xl mx-auto gap-4">
         <Link href="/" className="text-xl font-bold">
           Skill Share Hub
         </Link>
 
-        <nav className="flex gap-4 items-center">
+        <nav className="flex flex-wrap justify-center gap-3 items-center">
           <Link href="/" className="hover:underline">
             Home
           </Link>
