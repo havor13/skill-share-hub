@@ -59,7 +59,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse("Tutorial not found", 404);
     }
 
-    if (tutorial.author.toString() !== session.user.id) {
+    const isOwner = tutorial.author.toString() === session.user.id;
+    const isAdmin = session.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
       return errorResponse("Unauthorized. You can only update your own tutorials.", 403);
     }
 
@@ -111,7 +114,10 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
       return errorResponse("Tutorial not found", 404);
     }
 
-    if (tutorial.author.toString() !== session.user.id) {
+    const isOwner = tutorial.author.toString() === session.user.id;
+    const isAdmin = session.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
       return errorResponse("Unauthorized. You can only delete your own tutorials.", 403);
     }
 
