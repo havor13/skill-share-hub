@@ -7,8 +7,11 @@ import {
   type Types,
 } from "mongoose";
 
-export const TUTORIAL_CATEGORIES = ["coding", "cooking", "design"] as const;
-export type TutorialCategory = (typeof TUTORIAL_CATEGORIES)[number];
+import { TUTORIAL_CATEGORIES, type TutorialCategory } from "@/lib/categories";
+
+// Re-exported so existing imports from "@/models/Tutorial" keep working.
+export { TUTORIAL_CATEGORIES };
+export type { TutorialCategory };
 
 export interface IComment {
   user: Types.ObjectId;
