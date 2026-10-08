@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CATEGORY_LABELS, TUTORIAL_CATEGORIES } from '@/lib/categories';
 
 export default function TutorialForm() {
   const router = useRouter();
@@ -86,9 +87,11 @@ export default function TutorialForm() {
         required
       >
         <option value="">Select a category</option>
-        <option value="coding">Coding</option>
-        <option value="cooking">Cooking</option>
-        <option value="design">Design</option>
+        {TUTORIAL_CATEGORIES.map((value) => (
+          <option key={value} value={value}>
+            {CATEGORY_LABELS[value]}
+          </option>
+        ))}
       </select>
 
       <label htmlFor="contentUrl">Tutorial Link</label>

@@ -9,7 +9,8 @@ export default function TutorialSearch({
 }: TutorialSearchProps) {
   return (
     <input
-      type="text"
+      type="search"
+      aria-label="Search tutorials"
       placeholder="Search tutorials"
       value={search}
       onChange={(e) => setSearch(e.target.value)}
