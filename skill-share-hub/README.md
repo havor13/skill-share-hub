@@ -1,107 +1,165 @@
 # Skill Share Hub
 
-A Next.js platform for sharing short tutorials across coding, cooking, and design.  
-It supports user accounts and profiles, tutorial posting, ratings and comments, category‑based search and filtering, responsive layouts, and clear error handling.
+Skill Share Hub is a community learning platform where people share and discover short, practical tutorials on everyday skills such as coding, cooking, design, music and more. Members can post tutorials, browse them by keyword and category, and rate them so the best content is easy to find.
 
----
+**Live app:** https://skill-share-hub-eta.vercel.app/
+**Project board:** https://github.com/users/havor13/projects/2
 
-## 📌 Project Overview
-- **Title:** Skill Share Hub  
-- **Description:** Provide bite‑sized, peer‑driven tutorials for learners who prefer quick, focused lessons.  
-- **Target Audience:** Students, hobbyists, and professionals seeking practical skills without long courses.  
+## Team
 
----
-## Team-mates Names
-Sampson Havor
-Simone Leticia C G Plaine
+| Name | GitHub |
+| --- | --- |
+| Sampson Havor | [@havor13](https://github.com/havor13) |
+| Simone Leticia Cavallari Gois Plaine | [@slplaine](https://github.com/slplaine) |
 
-## 🚀 Getting Started
+## Product demo summary
 
-First, run the development server:
+Skill Share Hub helps learners find quick, focused tutorials without committing to a long course. It is intended for students, hobbyists and professionals who want to pick up new skills, and for contributors who want to share what they know.
+
+The main flow is: sign up, log in, create a tutorial, and see it appear in the tutorial list. Other users can search and filter tutorials, open a tutorial, rate it, and leave comments. Authors can edit or delete their own tutorials, and administrators can moderate any tutorial.
+
+Search, category filters and ratings help people find good content quickly, and the responsive layout works on desktop and mobile.
+
+## Features
+
+- Sign up, log in and log out (NextAuth credentials, JWT sessions)
+- Roles: regular users and administrators
+- Create, view, edit and delete tutorials (CRUD)
+  - Only the author or an admin can edit or delete a tutorial
+- Search by keyword and filter by category (13 categories)
+- Star ratings with an automatically updated average (one rating per user, re-rating updates it)
+- Comments on tutorials (saved to the database; the comment's author or an admin can delete a comment)
+- Responsive layout
+
+## Tech stack
+
+- Next.js (App Router) and TypeScript
+- Tailwind CSS
+- MongoDB with Mongoose
+- NextAuth v4 (Credentials provider) with bcrypt password hashing
+- Deployed on Vercel
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20 or later
+- A MongoDB database (for example MongoDB Atlas)
+
+### Setup
+
+```bash
+git clone https://github.com/havor13/skill-share-hub.git
+cd skill-share-hub/skill-share-hub
+npm install
+```
+
+Create a `.env.local` file in the project root (the folder with `package.json`):
+
+```
+MONGODB_URI=your-mongodb-connection-string
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=a-long-random-string
+```
+
+Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
 
-User Stories & Acceptance Scenarios
-User Story 1 – Create an account and manage a profile (P1)
-Sign up with valid details → profile created.
+Open http://localhost:3000.
 
-Update bio, avatar, display name → changes saved.
+### Useful commands
 
-Invalid data → validation feedback shown.
+```bash
+npm run lint          # ESLint
+npx tsc --noEmit      # type check
+npm run build         # production build
+```
 
-User Story 2 – Publish, discover, and filter tutorials (P1)
-Authenticated author publishes tutorial → visible to others.
+### Admin accounts
 
-Learner searches or filters → matching tutorials shown.
+New accounts are regular users. To make a user an admin, use the helper script in `scripts/set-user-role.ts` (run it with `npx tsx` from the project root).
 
-No matches → empty‑state message displayed.
+## Deployment
 
-User Story 3 – Update and delete tutorials (P1)
-Author edits tutorial → updates successfully.
+The app is deployed on Vercel. Set these environment variables in the Vercel project settings:
 
-Author deletes tutorial → removed from results.
+| Variable | Value |
+| --- | --- |
+| `MONGODB_URI` | MongoDB connection string |
+| `NEXTAUTH_SECRET` | long random string |
+| `NEXTAUTH_URL` | `https://skill-share-hub-eta.vercel.app` (the production URL, not localhost) |
 
-Unauthorized user → blocked with error message.
+Redeploy after changing environment variables.
 
-User Story 4 – Rate, comment, and evaluate content (P2)
-Signed‑in user submits rating/comment → stored and displayed.
+## Project structure
 
-Invalid feedback → rejected with guidance.
+```
+app/
+  api/
+    auth/               signup and NextAuth routes
+    tutorials/          tutorial, rating and comment routes
+  (auth)/login          login page
+  signup                sign-up page
+  tutorials/            list page
+  tutorials/new         create page
+  tutorials/[id]        detail page
+  tutorials/[id]/edit   edit page
+components/             reusable UI (tutorial card, filter, search, forms, rating widget, comments, ...)
+hooks/                  useRatings, useComments
+lib/                    dbConnect, authOptions, categories, API helpers
+models/                 Mongoose models (User, Tutorial)
+```
 
-Multiple ratings → aggregate score shown.
+## API documentation
 
-User Story 5 – Responsive design (P2)
-Mobile users can browse, manage profiles, and submit content.
+All responses are JSON. Errors have the form `{ "error": "message" }`.
 
-Forms remain usable on smaller viewports.
+### Authentication
 
-⚙️ Requirements
-Functional Requirements
-FR‑001 → FR‑014: Authentication, profile management, tutorial CRUD, search/filter, ratings/comments, responsive design, error handling, and security.
+| Method | Route | Description |
+| --- | --- | --- |
+| POST | `/api/auth/signup` | Create an account. Body: `name`, `email`, `password`. Returns 409 if the email already exists. |
+| POST | `/api/auth/callback/credentials` | Log in (handled by NextAuth; use `signIn('credentials')`). |
+| GET | `/api/auth/session` | Current session, including user `id` and `role`. |
+| POST | `/api/auth/signout` | Log out. |
 
-Key Entities
-User: Registered member with profile details.
+### Tutorials
 
-Tutorial: Shared learning resource with metadata.
+| Method | Route | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/api/tutorials` | Public | List tutorials. Optional query params: `search` (text) and `category`. |
+| POST | `/api/tutorials` | Logged in | Create a tutorial. Body: `title`, `description`, `category`, `contentUrl`. |
+| GET | `/api/tutorials/:id` | Public | Get one tutorial. |
+| PUT | `/api/tutorials/:id` | Owner or admin | Update a tutorial. |
+| DELETE | `/api/tutorials/:id` | Owner or admin | Delete a tutorial. |
 
-Category: Topical grouping (coding, cooking, design).
+Status codes: `401` when not logged in, `403` when logged in but neither the owner nor an admin, `400` for an invalid id, `404` when the tutorial does not exist.
 
-Rating/Feedback: Learner’s evaluation with rating + comment.
+### Ratings
 
-GitHub repository:https://github.com/havor13/skill-share-hub 
+| Method | Route | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/api/tutorials/:id/ratings` | Public | Ratings for a tutorial plus the average and count. |
+| POST | `/api/tutorials/:id/ratings` | Logged in | Submit a rating. Body: `value` (integer 1 to 5). Returns 201 for a new rating and 200 when updating your existing rating. |
 
-API Endpoints
-POST /api/auth/signup → create account
+### Comments
 
-POST /api/auth/login → authenticate user
+| Method | Route | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/api/tutorials/:id/comments` | Public | List comments for a tutorial, oldest first, with author names. |
+| POST | `/api/tutorials/:id/comments` | Logged in | Add a comment. Body: `text` (1 to 1000 characters). Returns 201. |
+| DELETE | `/api/tutorials/:id/comments/:commentId` | Comment author or admin | Delete a comment. Returns 403 for anyone else. |
 
-GET /api/users/:id → fetch profile
+## Known issues and opportunities
 
-PUT /api/users/:id → update profile
+- Comments cannot be edited after posting, and long comment lists are not paginated.
+- The comments UI does not have a delete button yet (deleting is available through the API).
+- **Performance:** the mobile Lighthouse performance score has room to improve (font loading, client-side JavaScript, image optimization).
+- Future ideas: comment editing and a delete button, user profile page, tutorial bookmarks, pagination for the tutorial and comment lists.
 
-POST /api/tutorials → create tutorial
+## Workflow
 
-GET /api/tutorials → list tutorials (search/filter)
-
-GET /api/tutorials/:id → tutorial detail
-
-PUT /api/tutorials/:id → update tutorial
-
-DELETE /api/tutorials/:id → delete tutorial
-
-POST /api/tutorials/:id/ratings → submit rating/comment
-
-GET /api/tutorials/:id/ratings → fetch ratings/comments
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Work is done on feature branches and merged through pull requests, each linked to a GitHub issue on the project board.
