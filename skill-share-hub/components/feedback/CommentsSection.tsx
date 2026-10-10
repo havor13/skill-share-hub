@@ -1,49 +1,47 @@
+// components/feedback/CommentsSection.tsx   (REPLACES existing file)
 'use client';
 
-import { useState } from 'react';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
+import { useComments } from '@/hooks/useComments';
 
-type Comment = {
-  id: number;
-  author: string;
-  content: string;
+type Props = {
+  tutorialId: string;
 };
 
-const initialComments: Comment[] = [
-  {
-    id: 1,
-    author: 'Sarah',
-    content: 'Great tutorial!',
-  },
-  {
-    id: 2,
-    author: 'John',
-    content: 'Very helpful explanation.',
-  },
-];
+export default function CommentsSection({ tutorialId }: Props) {
+  const { comments, loading, error, addComment } = useComments(tutorialId);
 
-export default function CommentsSection() {
-  const [comments, setComments] =
-    useState(initialComments);
+  // CommentList expects { id: number, author, content }.
+  const listItems = comments.map((c, index) => ({
+    id: index + 1,
+    author: c.user?.name ?? 'Unknown',
+    content: c.text,
+  }));
 
   function handleAddComment(content: string) {
-    const newComment: Comment = {
-      id: Date.now(),
-      author: 'You',
-      content,
-    };
-
-    setComments([...comments, newComment]);
+    void addComment(content);
   }
 
   return (
     <>
-      <CommentList comments={comments} />
+      {loading && <p role="status">Loading comments...</p>}
 
-      <CommentForm
-        onAddComment={handleAddComment}
-      />
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
+
+      {!loading && listItems.length === 0 && !error && (
+        <p className="text-sm opacity-70">
+          No comments yet. Be the first to comment.
+        </p>
+      )}
+
+      <CommentList comments={listItems} />
+
+      <CommentForm onAddComment={handleAddComment} />
     </>
   );
 }

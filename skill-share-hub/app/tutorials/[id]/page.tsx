@@ -65,7 +65,7 @@ export default async function TutorialDetailPage({ params }: Props) {
       </section>
 
       <section className="mt-8">
-        <CommentsSection />
+        <CommentsSection tutorialId={id} /> 
       </section>
     </main>
   );
